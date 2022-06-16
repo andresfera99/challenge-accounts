@@ -1,0 +1,2 @@
+- getAccount returns 200 when an account doesn't exists and the response body is blank, instead I would return 404 and maybe a custom error message: 'Account not found'
+- The transfer endpoint uses `@RequestParam` instead of `@RequestBody` what made me write the tests using `APPLICATION_FORM_URLENCODED_VALUE` instead of `JSON`. The improvement would be use `JSON` for consistency.
