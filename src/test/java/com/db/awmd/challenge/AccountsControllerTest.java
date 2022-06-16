@@ -183,7 +183,10 @@ public class AccountsControllerTest {
     public void transferMoneyNegativeAmount() throws Exception {
         String id1 = "cuenta1";
         String id2 = "cuenta2";
-        this.mockMvc.perform(post("/v1/accounts/transfer").contentType(MediaType.APPLICATION_JSON)
-                .content("{\"accountFrom\":\"" + id1 + "\", \"accountTo\":\"" + id2 + "\",\"money\":-1000}")).andExpect(status().isBadRequest());
+        this.mockMvc.perform(post("/v1/accounts/transfer")
+                        .param("accountFrom", id1)
+                        .param("accountTo", id2)
+                        .param("money", "-10"))
+                .andExpect(status().isBadRequest());
     }
 }
