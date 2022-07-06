@@ -113,7 +113,7 @@ public class AccountsControllerTest {
         String id2 = "cuenta2";
 
 
-        this.accountsService.transferMoney(id1, id2, 100.0f);
+        this.accountsService.transferMoney(id1, id2, new BigDecimal("100.0"));
         this.mockMvc.perform(get("/v1/accounts/" + id1))
                 .andExpect(status().isOk())
                 .andExpect(

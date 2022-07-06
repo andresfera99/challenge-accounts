@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/v1/accounts")
 @Slf4j
@@ -46,8 +48,8 @@ public class AccountsController {
     }
 
     @PostMapping(value = "/transfer")
-    public ResponseEntity<Object> transferMoney(@RequestParam(value = "accountFrom") @Valid String accountFrom, @RequestParam(value = "accountTo") @Valid String accountTo, @RequestParam(value = "money") @Valid @Min(0) Float money) {
-        return this.accountsService.transferMoney(accountFrom, accountTo, money) == true ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+    public ResponseEntity<Object> transferMoney(@RequestParam(value = "accountFrom") @Valid String accountFrom, @RequestParam(value = "accountTo") @Valid String accountTo, @RequestParam(value = "money") @Valid @Min(0) BigDecimal money) {
+        return this.accountsService.transferMoney(accountFrom, accountTo, money) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
 
     }
 

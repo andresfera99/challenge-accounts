@@ -27,11 +27,11 @@ public class AccountsService {
         return this.accountsRepository.getAccount(accountId);
     }
 
-    public boolean transferMoney(String accountFrom, String accountTo, Float money) {
+    public boolean transferMoney(String accountFrom, String accountTo, BigDecimal money) {
         Account originAccount = this.accountsRepository.getAccount(accountFrom);
         Account destinationAccount = this.accountsRepository.getAccount(accountTo);
 
-        if (originAccount == null || destinationAccount == null || money == null || money < 0) {
+        if (originAccount == null || destinationAccount == null || money == null || money.compareTo(BigDecimal.ZERO) <= 0) {
             return false;
         }
         //store the result of the operation
@@ -40,12 +40,12 @@ public class AccountsService {
         if (balance.compareTo(BigDecimal.ZERO) <= 0) {
             return false;
         }
-        BigDecimal operation = balance.subtract(BigDecimal.valueOf(money));
+        BigDecimal operation = balance.subtract(money);
         //check if its safe to proceed
         if (operation.compareTo(BigDecimal.ZERO) >= 0) {
             //proceed with the operation
-            destinationAccount.setBalance(destinationAccount.getBalance().add(BigDecimal.valueOf(money)));
-            originAccount.setBalance(originAccount.getBalance().subtract(BigDecimal.valueOf(money)));
+            destinationAccount.setBalance(destinationAccount.getBalance().add(money));
+            originAccount.setBalance(originAccount.getBalance().subtract(money));
 
             //notify account owners
             EmailNotificationService emailNotificationService = new EmailNotificationService();
