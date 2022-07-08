@@ -27,7 +27,7 @@ public class AccountsService {
         return this.accountsRepository.getAccount(accountId);
     }
 
-    public boolean transferMoney(String accountFrom, String accountTo, BigDecimal money) {
+    public synchronized boolean transferMoney(String accountFrom, String accountTo, BigDecimal money) {
         Account originAccount = this.accountsRepository.getAccount(accountFrom);
         Account destinationAccount = this.accountsRepository.getAccount(accountTo);
 
