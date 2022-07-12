@@ -27,7 +27,7 @@ public class AccountsService {
         return this.accountsRepository.getAccount(accountId);
     }
 
-    public synchronized boolean transferMoney(String accountFrom, String accountTo, BigDecimal money) {
+    public boolean transferMoney(String accountFrom, String accountTo, BigDecimal money) {
         Account originAccount = this.accountsRepository.getAccount(accountFrom);
         Account destinationAccount = this.accountsRepository.getAccount(accountTo);
 
@@ -44,8 +44,22 @@ public class AccountsService {
         //check if its safe to proceed
         if (operation.compareTo(BigDecimal.ZERO) >= 0) {
             //proceed with the operation
-            destinationAccount.setBalance(destinationAccount.getBalance().add(money));
-            originAccount.setBalance(originAccount.getBalance().subtract(money));
+
+            synchronized (originAccount) {
+                try {
+                    originAccount.setBalance(originAccount.getBalance().subtract(money));
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+            synchronized (destinationAccount) {
+                try {
+                    destinationAccount.setBalance(destinationAccount.getBalance().add(money));
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
 
             //notify account owners
             EmailNotificationService emailNotificationService = new EmailNotificationService();

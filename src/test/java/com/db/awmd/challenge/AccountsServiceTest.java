@@ -60,7 +60,7 @@ public class AccountsServiceTest {
         this.accountsService.createAccount(account2);
 
 
-        int numberOfThreads = 100;
+        /*int numberOfThreads = 100;
         ExecutorService service = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
         for (int i = 0; i < numberOfThreads; i++) {
@@ -77,6 +77,23 @@ public class AccountsServiceTest {
         }
         latch.await();
         assertEquals(BigDecimal.ZERO, account2.getBalance());
-        assertEquals(new BigDecimal("110"), account.getBalance());
+        assertEquals(new BigDecimal("110"), account.getBalance());*/
+
+        Thread t1 = new Thread(() -> {
+            this.accountsService.transferMoney(account2.getAccountId(), account.getAccountId(), new BigDecimal("10"));
+        });
+
+        Thread t2 = new Thread(() -> {
+            this.accountsService.transferMoney(account.getAccountId(), account2.getAccountId(), new BigDecimal("10"));
+        });
+        t1.start();
+        t2.start();
+
+        while (t1.isAlive() || t2.isAlive()) {
+            System.out.println("Waiting for threds to finish");
+        }
+        assertEquals(new BigDecimal("10"), this.accountsService.getAccount(account.getAccountId()).getBalance());
+        assertEquals(new BigDecimal("100"), this.accountsService.getAccount(account2.getAccountId()).getBalance());
     }
 }
+
